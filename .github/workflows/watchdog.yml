@@ -1,7 +1,12 @@
 name: 同步链停更巡检与自动重启
 
-# 自调度链兜底：每 3 小时检查最近一次巡检记录，超过 26 小时无同步即
-#  workflow_dispatch 重启 daily_sync.yml（与既有 x_fetch.yml chain=on 同一思路）。
+# 自调度链兜底（双判据）：
+#   1) 链路停更：距最近一次巡检记录 > 26h  → force 重启 daily_sync.yml
+#   2) 数据过期：meta.as_of 距今 >= 3 个自然日（收盘后基准 15:00 CST）→ force 重启
+#      阈值 3 天可完整容纳周末（周五数据到周日仅 2 天），不误触发；
+#      长假期间最多每 6h 重启一次，同步脚本幂等跳过、不提交、不编造。
+# 冷却：数据过期判据要求距最近巡检 > 6h，避免 3h 巡检周期连续触发重启。
+# 与既有 x_fetch.yml chain=on 同一思路，针对 GitHub 平台偶尔跳过单次 schedule。
 
 on:
   schedule:
@@ -16,30 +21,54 @@ jobs:
   watchdog:
     runs-on: ubuntu-latest
     steps:
-      - name: 检查最近同步时效并按需重启
+      - name: 检查链路时效与数据新鲜度并按需重启
         uses: actions/github-script@v7
         with:
           script: |
             const owner = context.repo.owner, repo = context.repo.repo;
-            let hours = Infinity, note = '';
+            const H = 3.6e6, DAY = 24 * H;
+            const now = Date.now();
+            let hours = Infinity, staleDays = NaN, asOf = '未知';
+            const notes = [];
+
+            const readJson = async (path) => {
+              const {data} = await github.rest.repos.getContent({owner, repo, path, ref: 'main'});
+              return JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
+            };
+
+            // 判据 1：链路时效（距最近一次巡检记录）
             try {
-              const {data} = await github.rest.repos.getContent({
-                owner, repo, path: 'data/sync_audit.json', ref: 'main'
-              });
-              const a = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
+              const a = await readJson('data/sync_audit.json');
               const runs = (a && a.runs) || [];
               const last = runs.length ? runs[runs.length - 1].at : null;
-              if (last) hours = (Date.now() - new Date(last).getTime()) / 3.6e6;
-              note = `距上次巡检 ${Number.isFinite(hours) ? hours.toFixed(1) + 'h' : '未知'}`;
+              if (last) hours = (now - new Date(last).getTime()) / H;
+              notes.push(`距上次巡检 ${Number.isFinite(hours) ? hours.toFixed(1) + 'h' : '未知'}`);
             } catch (e) {
-              note = '审计文件读取失败: ' + e.message;
+              notes.push('审计文件读取失败: ' + e.message);
             }
-            if (!Number.isFinite(hours) || hours > 26) {
+
+            // 判据 2：数据新鲜度（净值 as_of 落后天数，基准为当日 15:00 CST 收盘）
+            try {
+              const m = await readJson('data/meta.json');
+              asOf = m.as_of;
+              const asOfMs = new Date(asOf + 'T07:00:00Z').getTime();
+              staleDays = (now - asOfMs) / DAY;
+              notes.push(`净值 as_of=${asOf} 距今 ${Number.isFinite(staleDays) ? staleDays.toFixed(1) + 'd' : '未知'}`);
+            } catch (e) {
+              notes.push('meta 读取失败: ' + e.message);
+            }
+
+            const chainStale = !Number.isFinite(hours) || hours > 26;
+            const dataStale = Number.isFinite(staleDays) && staleDays >= 3;
+            const cooled = hours > 6;                       // 冷却：避免连续重启
+            const msg = notes.join(' | ');
+
+            if (chainStale || (dataStale && cooled)) {
               await github.rest.actions.createWorkflowDispatch({
                 owner, repo, workflow_id: 'daily_sync.yml', ref: 'main',
                 inputs: { mode: 'force' }
               });
-              core.notice('同步链停更（' + note + '），已自动 workflow_dispatch 重启');
+              core.notice(`检出${chainStale ? '链路停更' : '数据过期'}（${msg}），已 workflow_dispatch 重启 daily_sync（mode=force）`);
             } else {
-              core.info('同步链正常：' + note + '（停更阈值 26h）');
+              core.info(`同步链正常：${msg}（停更阈值 26h / 数据过期 3d）`);
             }
