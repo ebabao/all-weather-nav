@@ -21,6 +21,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
       - 'scripts/**'
       - 'model/**'
       - '.github/workflows/daily_sync.yml'

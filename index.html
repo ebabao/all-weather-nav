@@ -15,23 +15,29 @@ body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1
  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
  -webkit-font-smoothing:antialiased}
 a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
-.topnav{position:sticky;top:0;z-index:20;background:rgba(19,42,74,.96);backdrop-filter:blur(12px);
- border-bottom:1px solid rgba(255,255,255,.10)}
-.topnav .wrap{display:flex;align-items:center;gap:22px;height:62px}
-.brand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:700;white-space:nowrap;font-size:16.5px}
-.brand .mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#e8b64c,#f6dda0);
- display:grid;place-items:center;color:#3a2a00;font-weight:800;font-size:14px}
-.vtag{background:#e8b64c;color:#3a2a00;font-size:12px;font-weight:800;padding:3px 9px;border-radius:4px}
-.navlinks{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;flex:1}
+.topnav{position:sticky;top:0;z-index:20;background:#101b30;
+ border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.topnav .wrap{display:flex;align-items:center;gap:30px;height:68px;max-width:1220px;padding:0 22px}
+.brand{display:flex;align-items:center;gap:12px;color:#fff;font-weight:600;white-space:nowrap;
+ font-size:17px;letter-spacing:.6px}
+.brand .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(150deg,#f3e3bd,#dfc07d);
+ display:grid;place-items:center;color:#2b2416;font-weight:800;font-size:15px;letter-spacing:.5px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+.brand .btext{font-weight:600}
+.navlinks{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;flex:1;
+ margin-left:24px;justify-content:space-between}
 .navlinks::-webkit-scrollbar{display:none}
-.navlinks a{color:rgba(255,255,255,.78);font-size:14.5px;padding:9px 13px;border-radius:8px;font-weight:600}
-.navlinks a:hover{color:#fff;background:rgba(255,255,255,.10);text-decoration:none}
-.live{display:flex;align-items:center;gap:7px;color:#dbe4ff;font-size:12.5px;white-space:nowrap}
+.navlinks a{color:rgba(255,255,255,.88);font-size:15px;padding:10px 16px;border-radius:8px;
+ font-weight:500;letter-spacing:.4px;transition:color .15s,background .15s}
+.navlinks a:hover{color:#fff;background:rgba(255,255,255,.08);text-decoration:none}
+.navlinks a.on{color:#f3e3bd;background:rgba(232,182,76,.12)}
+.live{display:flex;align-items:center;gap:7px;color:rgba(219,228,255,.78);font-size:12px;white-space:nowrap}
+.live span{display:none}
 .live i{width:7px;height:7px;border-radius:50%;background:#55d39a;box-shadow:0 0 0 4px rgba(85,211,154,.14)}
 .live.warn i{background:#f0b429;box-shadow:0 0 0 4px rgba(240,180,41,.14)}
 .wrap{max-width:1220px;margin:0 auto;padding:0 22px 60px}
 /* 广告横幅：全天候策略（与顶部导航连成一体） */
-.hero{background:linear-gradient(160deg,#122744 0%,#1e3860 58%,#2c5282 100%);color:#fff;
+.hero{background:linear-gradient(160deg,#101b30 0%,#1c3455 58%,#2a4d7d 100%);color:#fff;
  padding:42px 0 40px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-60px;top:-110px;width:300px;height:300px;border-radius:50%;
  background:radial-gradient(circle,rgba(232,182,76,.13),transparent 68%);pointer-events:none}
@@ -135,18 +141,25 @@ footer{color:#8a99ab;font-size:12px;text-align:center;padding:26px 0 8px;margin-
  .kpi:nth-child(6n){border-right:1px solid var(--line)}.kpi:nth-last-child(-n+3){border-bottom:0}
  .stats{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}
  .targets{grid-template-columns:1fr}.rcgrid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:640px){.wrap{padding:0 12px 40px}.topnav .wrap{gap:8px;height:54px}
- .brand .btext{display:none}.live{display:none}.kpis{grid-template-columns:repeat(2,1fr)}
+@media(max-width:1180px){.topnav .wrap{gap:18px}.brand .btext{display:none}.navlinks{margin-left:0}}
+@media(max-width:980px){.topnav .wrap{gap:14px}.navlinks a{padding:10px 12px;font-size:14px}
+ .navlinks{mask-image:linear-gradient(90deg,#000 92%,transparent);
+  -webkit-mask-image:linear-gradient(90deg,#000 92%,transparent)}}
+@media(max-width:640px){.wrap{padding:0 12px 40px}.topnav .wrap{gap:10px;height:58px}
+ .brand .btext{display:none}.brand .mark{width:34px;height:34px;border-radius:10px;font-size:13px}
+ .live{display:none}.kpis{grid-template-columns:repeat(2,1fr)}
  .kpi:nth-child(2n){border-right:0}.kpi:nth-child(3n){border-right:1px solid var(--line)}
  .kpi:nth-last-child(-n+2){border-bottom:0}.kpi .v{font-size:18px}
- .stats{grid-template-columns:repeat(2,1fr)}.navlinks a{padding:8px 9px;font-size:13px}}
+ .stats{grid-template-columns:repeat(2,1fr)}.navlinks{gap:0;margin-left:8px;
+  mask-image:linear-gradient(90deg,#000 88%,transparent);
+  -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent)}
+ .navlinks a{padding:9px 11px;font-size:13.5px}}
 </style>
 </head>
 <body>
 <nav class="topnav"><div class="wrap">
   <div class="brand"><span class="mark">AW</span><span class="btext">全天候策略研究看板</span></div>
-  <span class="vtag">v1.4</span>
-  <div class="navlinks">
+  <div class="navlinks" id="navlinks">
     <a href="#overview">绩效概览</a><a href="#equity">净值对比</a><a href="#pit">爬坑体验</a>
     <a href="#monthly">月度收益</a><a href="#weights">仓位配置</a><a href="#signal">调仓信号</a>
     <a href="#yearly">分年统计</a><a href="#ops">同步与部署</a>
@@ -510,6 +523,17 @@ function setSeg(sel,key,val){$$(sel+" button").forEach(b=>b.classList.toggle("on
 $$("#gran button").forEach(b=>b.addEventListener("click",()=>{S.gran=b.dataset.g;setSeg("#gran","g",S.gran);renderEquity();}));
 $$("#range button").forEach(b=>b.addEventListener("click",()=>{S.range=b.dataset.r;setSeg("#range","r",S.range);renderEquity();}));
 let rt=null;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>renderEquity(),160);});
+/* 导航滚动高亮：当前可视区块对应的菜单项着金色 */
+(function navSpy(){
+ const links=$$("#navlinks a"),secs=links.map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
+ const mark=()=>{let cur=secs[0];
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=120)cur=s;});
+  if(window.innerHeight+window.scrollY>=document.body.scrollHeight-4)cur=secs[secs.length-1];
+  links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+cur.id));};
+ let t=null;window.addEventListener("scroll",()=>{if(t)return;t=requestAnimationFrame(()=>{mark();t=null;});},{passive:true});
+ window.addEventListener("resize",mark,{passive:true});
+ mark();
+})();
 (async function boot(){
  try{
   const [m,n,s,w,a]=await Promise.all([
