@@ -43,9 +43,10 @@ from aw.data_layer import _parse_hfq, apply_qfq  # noqa: E402
 
 
 # ---------------------------------------------------------------- 抓取
-def _get(url: str, cache: Path, cfg: dict, label: str) -> str | None:
-    """带缓存的 GET；失败重试 <=2 次；仍失败返回 None 由调用方跳过并记录（不编造）。"""
-    if cache.exists() and cache.stat().st_size > 0:
+def _get(url: str, cache: Path, cfg: dict, label: str, use_cache: bool = True) -> str | None:
+    """带缓存的 GET；失败重试 <=2 次；仍失败返回 None 由调用方跳过并记录（不编造）。
+    use_cache=False 时强制重新请求并覆盖缓存（每日同步必须拿到当日最新交易日）。"""
+    if use_cache and cache.exists() and cache.stat().st_size > 0:
         return cache.read_text(encoding="utf-8", errors="ignore")
     retry = int(cfg["data"]["retry_max"])
     last = ""
@@ -95,7 +96,8 @@ def fetch_symbol(sym: str, cfg: dict, is_index: bool = False,
         except Exception:
             pass
 
-    txt = _get(KLINE.format(sym=sym, n=cfg["data"]["datalen"]), ck, cfg, f"{sym} 长历史K线")
+    txt = _get(KLINE.format(sym=sym, n=cfg["data"]["datalen"]), ck, cfg,
+               f"{sym} 长历史K线", use_cache=use_cache)
     errors = []
     if txt is None:
         errors.append("K线取数失败")
@@ -110,7 +112,7 @@ def fetch_symbol(sym: str, cfg: dict, is_index: bool = False,
 
     qfq_info = {"events": 0, "applied": 0, "skipped": [], "method": "价格指数无复权" if is_index else "hfq 分红复权"}
     if not is_index:
-        ht = _get(HFQ.format(sym=sym), ch, cfg, f"{sym} 复权因子")
+        ht = _get(HFQ.format(sym=sym), ch, cfg, f"{sym} 复权因子", use_cache=use_cache)
         fac = _parse_hfq(ht, sym) if ht else []
         px, info = apply_qfq(px, fac, sym)
         qfq_info = {"events": info["events"], "applied": info["applied"],
