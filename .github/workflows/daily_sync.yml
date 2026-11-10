@@ -1,0 +1,119 @@
+name: 每日同步并部署全天候策略看板
+
+# 参照 ebabao/style-rotation-nav 的「数据接口 + 静态看板 + 每日 bot 提交」架构，
+# 本工作流把外部驱动改为仓库内自调度链：每日抓数 → 模型回放 → 生成 data/ 接口
+# → 提交 → 自动部署 GitHub Pages。页面不重建，fetch(no-store) 即完成同步。
+
+on:
+  schedule:
+    # UTC 11:20 = 北京时间 19:20（A 股收盘后）；与参考工程每日 bot 提交节奏对齐
+    - cron: '20 11 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'sync(默认) | retrain(参数自进化) | force(强制重写接口)'
+        required: false
+        default: 'sync'
+      no_refresh:
+        description: '跳过抓数，用仓库内快照回放'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'model/**'
+      - '.github/workflows/daily_sync.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: aw-nav-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 每日同步（抓数 → 回放 → 生成接口 → 校验 → 审计）
+        run: |
+          ARGS=""
+          if [ "${{ inputs.no_refresh }}" = "true" ]; then ARGS="$ARGS --no-refresh"; fi
+          if [ "${{ inputs.mode }}" = "retrain" ]; then ARGS="$ARGS --retrain"; fi
+          if [ "${{ inputs.mode }}" = "force" ]; then ARGS="$ARGS --force"; fi
+          python scripts/sync_daily.py $ARGS
+
+      - name: 接口契约校验
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          root = pathlib.Path('data')
+          need = ['meta.json', 'nav.json', 'signal.json', 'weights.json',
+                  'rebalances.csv', 'monthly.csv', 'sync_audit.json']
+          for f in need:
+              p = root / f
+              assert p.exists() and p.stat().st_size > 0, f'接口缺失: {f}'
+          meta = json.loads((root / 'meta.json').read_text())
+          nav = json.loads((root / 'nav.json').read_text())
+          sig = json.loads((root / 'signal.json').read_text())
+          assert meta['bars'] == len(nav['dates']) == len(nav['nav']) == len(nav['ret']), '长度不一致'
+          assert nav['dates'] == sorted(nav['dates']), '日期非单调'
+          assert all(isinstance(v, (int, float)) for v in nav['nav']), '净值含非数值'
+          assert meta['as_of'] == nav['as_of'] == sig['as_of'], 'as_of 不同步'
+          assert isinstance(meta['reconcile']['max_abs_diff_pp'], (int, float)), '对账字段缺失'
+          print(f"接口校验 PASS | as_of={meta['as_of']} bars={meta['bars']} "
+                f"source={meta['sync']['source']} 对账={meta['reconcile']['max_abs_diff_pp']}pp")
+          PY
+
+      - name: 提交数据变更（幂等：无变化则跳过）
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ model/active_params.json model/state_snapshot.json model/aw14_out/data/
+          if git diff --cached --quiet; then
+            echo "本次无数据变化，跳过提交（页面保持上一版）"
+          else
+            git commit -m "chore(nav): 更新每日净值看板"
+            git push
+          fi
+
+  deploy:
+    needs: sync
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: 组装站点（仅页面与数据接口，不暴露脚本与模型文件）
+        run: |
+          mkdir -p site/data
+          cp index.html .nojekyll site/
+          cp data/* site/data/
+          ls -la site/ site/data/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
