@@ -17,19 +17,33 @@ body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1
 a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
 .topnav{position:sticky;top:0;z-index:20;background:rgba(19,42,74,.96);backdrop-filter:blur(12px);
  border-bottom:1px solid rgba(255,255,255,.10)}
-.topnav .wrap{display:flex;align-items:center;gap:22px;height:56px}
-.brand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:700;white-space:nowrap;font-size:15px}
-.brand .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#e8b64c,#f6dda0);
- display:grid;place-items:center;color:#3a2a00;font-weight:800;font-size:13px}
-.vtag{background:#e8b64c;color:#3a2a00;font-size:11px;font-weight:800;padding:2px 8px;border-radius:4px}
-.navlinks{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;flex:1}
+.topnav .wrap{display:flex;align-items:center;gap:22px;height:62px}
+.brand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:700;white-space:nowrap;font-size:16.5px}
+.brand .mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#e8b64c,#f6dda0);
+ display:grid;place-items:center;color:#3a2a00;font-weight:800;font-size:14px}
+.vtag{background:#e8b64c;color:#3a2a00;font-size:12px;font-weight:800;padding:3px 9px;border-radius:4px}
+.navlinks{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;flex:1}
 .navlinks::-webkit-scrollbar{display:none}
-.navlinks a{color:rgba(255,255,255,.74);font-size:12.5px;padding:7px 9px;border-radius:7px}
+.navlinks a{color:rgba(255,255,255,.78);font-size:14.5px;padding:9px 13px;border-radius:8px;font-weight:600}
 .navlinks a:hover{color:#fff;background:rgba(255,255,255,.10);text-decoration:none}
-.live{display:flex;align-items:center;gap:7px;color:#dbe4ff;font-size:12px;white-space:nowrap}
+.live{display:flex;align-items:center;gap:7px;color:#dbe4ff;font-size:12.5px;white-space:nowrap}
 .live i{width:7px;height:7px;border-radius:50%;background:#55d39a;box-shadow:0 0 0 4px rgba(85,211,154,.14)}
 .live.warn i{background:#f0b429;box-shadow:0 0 0 4px rgba(240,180,41,.14)}
 .wrap{max-width:1220px;margin:0 auto;padding:0 22px 60px}
+/* 广告横幅：全天候策略（与顶部导航连成一体） */
+.hero{background:linear-gradient(160deg,#122744 0%,#1e3860 58%,#2c5282 100%);color:#fff;
+ padding:42px 0 40px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-110px;width:300px;height:300px;border-radius:50%;
+ background:radial-gradient(circle,rgba(232,182,76,.13),transparent 68%);pointer-events:none}
+.hero-eyebrow{display:flex;align-items:center;gap:15px;color:#e8c886;
+ font-size:15px;letter-spacing:6px;font-weight:600;white-space:nowrap}
+.hero-eyebrow::before{content:"";width:44px;height:3px;background:#e8b64c;border-radius:2px;flex:0 0 auto}
+.hero h1{margin:12px 0 13px;font-size:37px;letter-spacing:2px;font-weight:800;line-height:1.25}
+.hero h1 .dot{color:#e8b64c;margin:0 6px}
+.hero-sub{font-size:14.5px;color:rgba(255,255,255,.75);letter-spacing:.5px;line-height:1.7}
+.hero-sub b{color:#f6dda0;font-weight:700;font-variant-numeric:tabular-nums}
+@media(max-width:980px){.hero{padding:30px 0 28px}.hero h1{font-size:27px}.hero-eyebrow{font-size:12px;letter-spacing:4px}}
+@media(max-width:640px){.hero h1{font-size:21px;letter-spacing:1px}.hero-sub{font-size:13px}.hero-eyebrow{font-size:11px;letter-spacing:3px;gap:10px}.hero-eyebrow::before{width:28px}}
 .sec{margin-top:28px}
 .sec h2{font-size:18px;margin:0 0 12px;padding-left:11px;border-left:4px solid var(--brand);color:var(--navy)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);overflow:hidden}
@@ -121,11 +135,11 @@ footer{color:#8a99ab;font-size:12px;text-align:center;padding:26px 0 8px;margin-
  .kpi:nth-child(6n){border-right:1px solid var(--line)}.kpi:nth-last-child(-n+3){border-bottom:0}
  .stats{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}
  .targets{grid-template-columns:1fr}.rcgrid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:640px){.wrap{padding:0 12px 40px}.topnav .wrap{gap:8px;height:50px}
+@media(max-width:640px){.wrap{padding:0 12px 40px}.topnav .wrap{gap:8px;height:54px}
  .brand .btext{display:none}.live{display:none}.kpis{grid-template-columns:repeat(2,1fr)}
  .kpi:nth-child(2n){border-right:0}.kpi:nth-child(3n){border-right:1px solid var(--line)}
  .kpi:nth-last-child(-n+2){border-bottom:0}.kpi .v{font-size:18px}
- .stats{grid-template-columns:repeat(2,1fr)}.navlinks a{padding:7px 5px;font-size:11.5px}}
+ .stats{grid-template-columns:repeat(2,1fr)}.navlinks a{padding:8px 9px;font-size:13px}}
 </style>
 </head>
 <body>
@@ -139,6 +153,15 @@ footer{color:#8a99ab;font-size:12px;text-align:center;padding:26px 0 8px;margin-
   </div>
   <div class="live" id="live"><i></i><span>接口加载中</span></div>
 </div></nav>
+
+<div class="hero">
+  <div class="wrap" style="padding-bottom:0">
+    <div class="hero-eyebrow">ALL-WEATHER STRATEGY RESEARCH</div>
+    <h1>全天候策略<span class="dot">·</span>七 ETF 进化学习版</h1>
+    <div class="hero-sub">四象限风险平价 × 国债专属杠杆，任何市场天气，都有应对 ——
+      策略年化 <b id="hb_cagr">—</b> · 夏普 <b id="hb_sharp">—</b> · 最大回撤 <b id="hb_dd">—</b></div>
+  </div>
+</div>
 
 <div class="wrap">
 <section class="sec" id="overview">
@@ -331,6 +354,9 @@ function renderHeader(){
 }
 function renderKPI(){
  const n=S.nav,m=n.metrics,b=n.benchmark_equal_weight||{};
+ $("#hb_cagr").textContent=nf(m.cagr,2,"%",true);
+ $("#hb_sharp").textContent=nf(m.sharp,2);
+ $("#hb_dd").textContent=nf(-m.max_drawdown,2,"%");
  const items=[
   ["累计收益",nf(m.total_return,2,"%",true),"起点归一化 · 净值 "+nf(m.final_nav,3)],
   ["策略年化",nf(m.cagr,2,"%",true),"复利年化 · 评估期口径"],
