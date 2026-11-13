@@ -1,18 +1,18 @@
 {
  "version": "v1.4",
- "generated_at": "2026-11-12 20:31:09",
+ "generated_at": "2026-11-13 18:34:57",
  "data_source": "新浪长历史日线(money.finance) + hfq.js 前复权因子（复用 v1.2 已验证链路）",
  "config_hash": "20a06cb14b2df6413cda357ca2e43d9f9844689316b408a94a0479d49b53baed",
  "range": {
   "start": "2013-01-04",
-  "end": "2026-11-12",
-  "trading_days": 3364,
-  "return_rows": 3363
+  "end": "2026-11-13",
+  "trading_days": 3365,
+  "return_rows": 3364
  },
  "eval_start_explicit": "2019-12-06",
  "common_start_all7": "2019-12-06",
  "price_first_all7": "2019-12-05",
- "eval_trading_days": 1680,
+ "eval_trading_days": 1681,
  "universe_size": 7,
  "calendar_source": "sh000300 沪深300指数交易日（A股）",
  "assets": {
@@ -23,8 +23,8 @@
    "quadrant": "BD",
    "listing_date": "2013-04-09",
    "first_return_date": "2013-04-10",
-   "price_rows": 3304,
-   "return_rows": 3303,
+   "price_rows": 3305,
+   "return_rows": 3304,
    "absent_days": 60,
    "ffill_zero_return_days": 0,
    "qfq": {
@@ -46,8 +46,8 @@
    "quadrant": "GD",
    "listing_date": "2013-07-29",
    "first_return_date": "2013-07-30",
-   "price_rows": 3231,
-   "return_rows": 3230,
+   "price_rows": 3232,
+   "return_rows": 3231,
    "absent_days": 133,
    "ffill_zero_return_days": 0,
    "qfq": {
@@ -69,8 +69,8 @@
    "quadrant": "CM",
    "listing_date": "2019-12-05",
    "first_return_date": "2019-12-06",
-   "price_rows": 1681,
-   "return_rows": 1680,
+   "price_rows": 1682,
+   "return_rows": 1681,
    "absent_days": 1683,
    "ffill_zero_return_days": 0,
    "qfq": {
@@ -92,8 +92,8 @@
    "quadrant": "EQ",
    "listing_date": "2019-01-18",
    "first_return_date": "2019-01-21",
-   "price_rows": 1893,
-   "return_rows": 1893,
+   "price_rows": 1894,
+   "return_rows": 1894,
    "absent_days": 1470,
    "ffill_zero_return_days": 1,
    "qfq": {
@@ -115,8 +115,8 @@
    "quadrant": "EQ",
    "listing_date": "2014-01-15",
    "first_return_date": "2014-01-16",
-   "price_rows": 3116,
-   "return_rows": 3116,
+   "price_rows": 3117,
+   "return_rows": 3117,
    "absent_days": 247,
    "ffill_zero_return_days": 1,
    "qfq": {
@@ -138,8 +138,8 @@
    "quadrant": "EQ",
    "listing_date": "2013-07-31",
    "first_return_date": "2013-08-01",
-   "price_rows": 3228,
-   "return_rows": 3228,
+   "price_rows": 3229,
+   "return_rows": 3229,
    "absent_days": 135,
    "ffill_zero_return_days": 1,
    "qfq": {
@@ -161,8 +161,8 @@
    "quadrant": "EQ",
    "listing_date": "2016-07-22",
    "first_return_date": "2016-07-25",
-   "price_rows": 2502,
-   "return_rows": 2501,
+   "price_rows": 2503,
+   "return_rows": 2502,
    "absent_days": 862,
    "ffill_zero_return_days": 0,
    "qfq": {
